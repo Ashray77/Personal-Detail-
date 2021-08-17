@@ -60,7 +60,7 @@ namespace PersonalInfoSys.DB
             }
         }
 
-        public JsonResult GetData()
+        public List<PersonalDetail> GetData()
         {
             List<PersonalDetail> PersonalList = new List<PersonalDetail>();
             string CS = ConfigurationManager.ConnectionStrings["myConnection"].ConnectionString;
@@ -75,19 +75,138 @@ namespace PersonalInfoSys.DB
                 {
                     var personaldetail = new PersonalDetail();
 
+                    personaldetail.Id = int.Parse(rdr["Id"].ToString());
                     personaldetail.Salutation = rdr["SALUTATION"].ToString();
                     personaldetail.FirstName = rdr["FIRST_NAME"].ToString();
                     personaldetail.LastName = rdr["LAST_NAME"].ToString();
-                    personaldetail.Age = Convert.ToInt32(rdr["AGE"]);
+                    personaldetail.Age = int.Parse(rdr["AGE"].ToString());
                     personaldetail.PhoneNumber = rdr["PHONE_NUM"].ToString();
                     personaldetail.Email = rdr["EMAIL"].ToString();
                     personaldetail.Gender = rdr["GENDER"].ToString();
                     personaldetail.Nationality = rdr["NATIONALITY"].ToString();
 
                     PersonalList.Add(personaldetail);
+
                 }
                 //return View(PersonalList);
-                return new JsonResult { Data = PersonalList, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+                return PersonalList;
+            }
+        }
+
+        public PersonalInfo FetchData(int? Id)
+        {
+            PersonalInfo personalInfo = new PersonalInfo();
+            List<Education> EduList = new List<Education>();
+            List<Address> AddList = new List<Address>();
+            string CS = ConfigurationManager.ConnectionStrings["myConnection"].ConnectionString;
+            using (SqlConnection con = new SqlConnection(CS))
+            {
+                SqlCommand cmd = new SqlCommand("USP_PERSONAL_DETAIL_SELECTALLDATA", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Id", Id);
+                con.Open();
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+
+                        personalInfo.Salutation = rdr["SALUTATION"].ToString();
+                        personalInfo.FirstName = rdr["FIRST_NAME"].ToString();
+                        personalInfo.LastName = rdr["LAST_NAME"].ToString();
+                        personalInfo.Age = int.Parse(rdr["AGE"].ToString());
+                        personalInfo.PhoneNumber = rdr["PHONE_NUM"].ToString();
+                        personalInfo.Email = rdr["EMAIL"].ToString();
+                        personalInfo.Gender = rdr["GENDER"].ToString();
+                        personalInfo.Nationality = rdr["NATIONALITY"].ToString();
+                    }
+                }
+                if (rdr.NextResult())
+                {
+                    while (rdr.Read())
+                    {
+                        EduList.Add(new Education { Name = rdr["EDU_NAME"].ToString() });
+
+                    }
+                    personalInfo.Educations = EduList;
+                }
+                if (rdr.NextResult())
+                {
+                    while (rdr.Read())
+                    {
+                        AddList.Add(new Address
+                        {
+                            AddressType = rdr["ADD_TYPE"].ToString(),
+                            Province = rdr["PROVINCE"].ToString(),
+                            City = rdr["CITY"].ToString(),
+                            SelectedCat = rdr["CITY_CATEGORY"].ToString(),
+                            Ward = int.Parse(rdr["WARD"].ToString()),
+                            Tole = rdr["TOLE"].ToString()
+                        });
+
+                    }
+                    personalInfo.AddressList = AddList;
+
+                }
+            }
+            return personalInfo;
+        }
+
+
+        //public void Update(PersonalInfo data, out string message)
+        //{
+        //    try
+        //    {
+        //        createConnection();
+        //        SqlCommand cmd = new SqlCommand("", sqlcon);
+        //        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+        //        string jsondata = JsonConvert.SerializeObject(data.AddressList);
+        //        string jsonEdu = JsonConvert.SerializeObject(data.Educations);
+        //        cmd.Parameters.AddWithValue("@SALUTATION", data.Salutation);
+        //        cmd.Parameters.AddWithValue("@FIRST_NAME", data.FirstName);
+        //        cmd.Parameters.AddWithValue("@LAST_NAME", data.LastName);
+        //        cmd.Parameters.AddWithValue("@AGE", data.Age);
+        //        cmd.Parameters.AddWithValue("@PHONE_NUMBER", data.PhoneNumber);
+        //        cmd.Parameters.AddWithValue("@EMAIL", data.Email);
+        //        cmd.Parameters.AddWithValue("@GENDER", data.Gender);
+        //        cmd.Parameters.AddWithValue("@EDUCATION", jsonEdu);
+        //        cmd.Parameters.AddWithValue("@NATIONALITY", data.Nationality);
+        //        cmd.Parameters.AddWithValue("@ADD_JSON", jsondata);
+        //        sqlcon.Open();
+        //        cmd.ExecuteNonQuery();
+        //        sqlcon.Close();
+
+        //        message = "Success";
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        message = ex.Message;
+        //    }
+        //}
+
+        public void Delete(int? id, out string message)
+        {
+            try
+            {
+                createConnection();
+                SqlCommand cmd = new SqlCommand("usp_personal_detail_delete", sqlcon);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@id", id);
+
+                sqlcon.Open();
+                cmd.ExecuteNonQuery();
+                sqlcon.Close();
+
+                message = "success";
+
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
             }
         }
 

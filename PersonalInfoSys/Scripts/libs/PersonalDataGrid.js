@@ -1,6 +1,6 @@
 ﻿const pqOptions = {
     width: "auto",
-    height: 250,
+    height: 500,
     showTitle: false,
     showHeader: true,
     showTop: true,
@@ -46,7 +46,6 @@ function DetailVM() {
             this.NationalId = ko.observable(item.NationalId || "");
             this.Nationality = ko.observable(item.Nationality || "");
         },
-    
 
         UiElements: function () {
             self.MyModel = ko.observable(new models.MyModel());
@@ -66,7 +65,7 @@ function DetailVM() {
 
     const UiEvents = {
         functions: {
-            Save: function (control) {
+            AddDetails: function (control) {
                 if ($("#" + control).pqGrid("instance")) {
                     // $("#" + control).pqGrid("destroy");
                     $("#" + control).pqGrid('option', 'dataModel.data', ko.toJS(self.DetailList()));
@@ -85,23 +84,86 @@ function DetailVM() {
                         {
                             title: "Action", align: "Center", width: "20%", render: function (ui) {
 
-                                return `<button class="btn btn-danger" onclick="obj.delete(${ui.rowIndx});" type="button"><i class="fas fa-trash fa-lg">  Delete</i></button>  <button class="btn" style="background-color: #66CD00" onclick="obj.edit(${ui.rowIndx});" type="button"><i class="fas fa-edit fa-lg">Edit</i></button>`;
+                                return `<button class="btn btn-danger" onclick="obj.delete(${ui.rowData.Id});" type="button"><i class="fas fa-trash fa-lg">  Delete</i></button>  <button class="btn" style="background-color: #66CD00" onclick="obj.edit(${ui.rowData.Id});" type="button"><i class="fas fa-edit fa-lg">Edit</i></button>`;
                             }
                         },
 
                     ];
 
                     options.dataModel = { data: ko.toJS(self.DetailList()) };
-                    options.showBottom = false;
+                    options.showBottom = true;
                     $("#" + control).pqGrid(options);
                 }
+            },
+
+            AjaxCallforDetail: function () {
+                $.ajax({
+
+                    type: "POST",
+                    url: '/Home/GetAllData',
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        debugger;
+                        self.DetailList([]);
+                        self.DetailList(result.Data);
+                        UiEvents.functions.AddDetails("DetailGrid");
+                    }
+                });
+            },
+
+            AjaxForEdit: function (PersonalId) {
+                debugger
+                $.ajax({
+                    type: "POST",
+                    url: '/Home/FetchDetails',
+                    dataType: "json",
+                    data: JSON.stringify({ Id: PersonalId }),
+                    contentType: "application/json; charset=utf-8",
+                    success: function () {
+                        debugger
+                        UiEvents.functions.AddDetails("DetailGrid");
+                    }
+                })
+            },
+
+            //AjaxForUpdate: function () {
+
+            //},
+
+            AjaxForDelete: function (PersonalId) {
+               
+                $.ajax({
+                    type: "POST",
+                    url: '/Home/DeleteData',
+                    dataType: "json",
+                    data: JSON.stringify({ Id: PersonalId }) ,
+                    contentType: "application/json; charset=utf-8",
+                    success: function () {
+                        /*debugger*/
+                        UiEvents.functions.AddDetails("DetailGrid");
+                    }
+                })
             }
         },
     }
 
+    self.edit = function (PersonalId) {
+        UiEvents.functions.AjaxForEdit(PersonalId);
+    }
+
+    //self.Update = function () {
+
+    //}
+
+    self.delete = function (PersonalId) {
+        UiEvents.functions.AjaxForDelete(PersonalId);
+    }
+
     function Init() {
         models.UiElements();
-        UiEvents.functions.Save("DetailGrid");
+        //UiEvents.functions.AddDetails("DetailGrid");
+        UiEvents.functions.AjaxCallforDetail();
     }
 
     Init();

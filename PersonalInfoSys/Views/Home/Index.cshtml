@@ -13,9 +13,8 @@
         <ul>
             <li><a href="#tabs-1">Personal Info</a></li>
             <li><a href="#tabs-2">Address</a></li>
+            <li><a href="#tabs-3">Details</a></li>
         </ul>
-
-
 
         <div id="tabs-1" data-bind="with: MyModel">
             <div class="form-row">
@@ -190,6 +189,13 @@
                 </div>
             </div>
         </div>
+
+        <div id="tabs-3">
+            <h1 style="text-align: center; font-family: sans-serif; font-weight: bolder;">Detail Grid</h1>
+            <div id="DetailGrid">
+            </div>
+        </div>
+
     </div>
 
     <div id="dialogbox" title="Error">
@@ -197,3 +203,5 @@
     </div>
 
 </div>
+
+<script src="~/Scripts/libs/personalinfo.js"></script>

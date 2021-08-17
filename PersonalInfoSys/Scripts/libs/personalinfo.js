@@ -103,7 +103,7 @@ function PersonalVM() {
             self.MyModel = ko.observable(new models.MyModel());
             self.MyAddress = ko.observable(new models.MyAddress());
             self.DataList = ko.observableArray([]);
-            self.DetailList = ko.observableArray([]);
+            //self.DetailList = ko.observableArray([]);
             //self.EduList = ko.observableArray([]);
             self.HdnId = ko.observable('');
             self.enableDisableNew = ko.observable(true);
@@ -359,20 +359,6 @@ function PersonalVM() {
                 });
             },
 
-            AjaxCallforDetail: function () {
-                $.ajax({
-
-                    type: "POST",
-                    url: '/Home/About',
-                    dataType: "json",
-                    data: JSON.stringify({ "data": PersonalList }),
-                    contentType: "application/json; charset=utf-8",
-                    success: function (data) {
-                        self.DetailList.push(ko.toJS(PersonalList));
-                    }
-                });
-            },
-
             AddressValidation: function () {
                 if (isNullOrEmpty(self.MyAddress().AddressTypeId())) {
                     $("#tabs").tabs({ active: 1 });
@@ -523,41 +509,10 @@ function PersonalVM() {
                     $("#" + control).pqGrid(options);
                 }
             },
-
-            DataShow: function (control) {
-                if ($("#" + control).pqGrid("instance")) {
-                    // $("#" + control).pqGrid("destroy");
-                    $("#" + control).pqGrid('option', 'dataModel.data', ko.toJS(self.DetailList()));
-                    $("#" + control).pqGrid('refreshDataAndView');
-                } else {
-                    const options = Object.assign({}, pqOptions);
-                    options.colModel = [
-                        { title: "Salutation", align: "center", dataIndx: "Salutation", width: "10%" },
-                        { title: "FirstName", align: "left", dataIndx: "FirstName", width: "15%" },
-                        { title: "LastName", align: "center", dataIndx: "LastName", width: "15%" },
-                        { title: "Age", align: "center", dataIndx: "Age", width: "5%" },
-                        { title: "PhoneNumber", align: "Center", dataIndx: "PhoneNumber", width: "10%" },
-                        { title: "Email", align: "Center", dataIndx: "Email", width: "15%" },
-                        { title: "Gender", align: "Center", dataIndx: "Gender", width: "5%" },
-                        { title: "Nationality", align: "Center", dataIndx: "Nationality", width: "10%" },
-                        {
-                            title: "Action", align: "Center", width: "15%", render: function (ui) {
-
-                                return `<button class="btn btn-danger" onclick="obj.delete(${ui.rowIndx});" type="button"><i class="fas fa-trash fa-lg">  Delete</i></button>  <button class="btn" style="background-color: #66CD00" onclick="obj.edit(${ui.rowIndx});" type="button"><i class="fas fa-edit fa-lg">Edit</i></button>`;
-                            }
-                        },
-
-                    ];
-
-                    options.dataModel = { data: ko.toJS(self.DetailList()) };
-                    options.showBottom = false;
-                    $("#" + control).pqGrid(options);
-                }
-            }
+            
         },
 
     };
-
 
 
     self.onChangeOfSalutation = function () {
@@ -601,7 +556,7 @@ function PersonalVM() {
             self.enableDisableAdd(true);
 
         }
-    }
+    };
 
     self.Clear = function () {
         UiEvents.clear.ResetAll();
@@ -692,25 +647,16 @@ function PersonalVM() {
         }
     };
 
-    self.DetailLoad = function () {
-
-    };
+    
 
 
     function Init() {
         models.UiElements();
-        UiEvents.functions.DataShow("DetailGrid");
         $("#tabs").tabs();
         UiEvents.clear.ResetAll();
-
-        // UiEvents.functions.Save("dataGrid");
+        
         $("#tabs, #tabs-2").click(function () {
-            // alert("asd");
             UiEvents.functions.Save("dataGrid");
-        });
-
-        $("#DetailBtn").click(function () {
-            console.log('yo yo yo .....you good to go.!!!');
         });
 
         $("#dialogbox").dialog({

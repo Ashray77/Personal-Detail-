@@ -6,6 +6,7 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/js/jquery-3.4.1.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
     <link href="~/Scripts/libs/pqGrid/pqgrid.min.css" rel="stylesheet" />
@@ -82,7 +83,7 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
-    <script src="~/Scripts/js/jquery-3.4.1.min.js"></script>
+    
     <script src="~/Scripts/js/jquery-ui.min.js"></script>
     <script src="~/Scripts/js/knockout-3.3.0.js"></script>
     <script src="~/Scripts/libs/jquery/jquery-3.4.1.min.js"></script>
@@ -92,7 +93,7 @@
     <script src="~/Scripts/libs/pqGrid/localize/pq-localize-en.js"></script>
     <script src="~/Scripts/libs/pqGrid/knockout/ko.pqgrid.min.js"></script>
 
-    <script src="~/Scripts/libs/personalinfo.js"></script>
+    @*<script src="~/Scripts/libs/personalinfo.js"></script>*@
     @*<script src="~/Scripts/libs/PersonalDataGrid.js"></script>*@
 
 </body>

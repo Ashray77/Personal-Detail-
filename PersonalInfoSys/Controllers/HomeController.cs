@@ -46,9 +46,35 @@ namespace PersonalInfoSys.Controllers
         }
 
         [HttpPost]
-        public ActionResult About(PersonalDetail personalDetail)
+        public ActionResult GetAllData()
         {
-            return View(conn.GetData());
+            List<PersonalDetail> PersonalList = conn.GetData();
+
+            return Json(  new JsonResult { Data = PersonalList, JsonRequestBehavior = JsonRequestBehavior.DenyGet });
+
+        }
+
+        [HttpPost]
+        public ActionResult FetchDetails(int? Id)
+        {
+            PersonalInfo AllDataList = conn.FetchData(Id);
+            return Json(new JsonResult { Data = AllDataList, JsonRequestBehavior = JsonRequestBehavior.DenyGet });
+        }
+
+        //public ActionResult UpdateData(PersonalInfo data)
+        //{
+        //    string message;
+        //    conn.SaveData(data, out message);
+        //    return Json(new JsonResult { Data = message });
+        //}
+
+        [HttpPost]
+        public ActionResult DeleteData(int? Id)
+        {
+            string message;
+            conn.Delete(Id, out message);
+            return Json(new JsonResult { Data = message });
+
         }
     }
 }
