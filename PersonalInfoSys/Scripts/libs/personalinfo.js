@@ -1,4 +1,5 @@
-﻿const pqOptions = {
+﻿
+const pqOptions = {
     width: "auto",
     height: 250,
     showTitle: false,
@@ -18,14 +19,6 @@
     pageModel: { curPage: 1, rPP: 10, type: "local" },
     columnTemplate: { wrap: true, editable: false, dataType: "string", halign: "center", hvalign: "center", resizable: true, styleHead: { 'font-weight': "bold" } },
 };
-
-// function DemoItem(id, name) {
-//     var self = this;
-
-//     self.id = ko.observable(id);
-//     self.Name = ko.observable(name);
-//     self.Selected = ko.observable(false);
-// }
 
 function PersonalVM() {
     const self = this;
@@ -74,7 +67,7 @@ function PersonalVM() {
             this.NationalId = ko.observable(item.NationalId || "");
             this.Nationality = ko.observable(item.Nationality || "");
         },
-            
+
         MyAddress: function (item1) {
             item1 = item1 || {};
             this.AddressTypeId = ko.observable(item1.AddressTypeId || "");
@@ -103,10 +96,11 @@ function PersonalVM() {
             self.MyModel = ko.observable(new models.MyModel());
             self.MyAddress = ko.observable(new models.MyAddress());
             self.DataList = ko.observableArray([]);
-            //self.DetailList = ko.observableArray([]);
-            //self.EduList = ko.observableArray([]);
+            self.DetailList = ko.observableArray([]);
             self.HdnId = ko.observable('');
+            self.PersonalId = ko.observable('');
             self.enableDisableNew = ko.observable(true);
+            self.enableDisableAllUpd = ko.observable(false);
             self.enableDisable = ko.observable(false);
             self.enableDisableGender = ko.observable(false);
             self.enableDisableAdd = ko.observable(false);
@@ -240,123 +234,23 @@ function PersonalVM() {
                     $("#errorMessage").html('Nationality must be entered');
                     $("#dialogbox").dialog("open");
                 }
-                //else if (isNullOrEmpty(self.MyAddress().AddressTypeId())) {
-                //    $("#tabs").tabs({ active: 1 });
-                //    $("#addressType").focus();
-                //    alert("Address Type Should must be entered");
-                //}
-                //else if (isNullOrEmpty(self.MyAddress().ProvinceId())) {
-                //    $("#tabs").tabs({ active: 1 });
-                //    $("#province").focus();
-                //    alert("Province Should must be entered");
-                //}
-                //else if (isNullOrEmpty(self.MyAddress().CityId())) {
-                //    $("#tabs").tabs({ active: 1 });
-                //    $("#city").focus();
-                //    alert("City Should must be entered");
-                //}
-                //else if (!(self.MyAddress().SelectedCat() == "Metroplitan" || self.MyAddress().SelectedCat() == "Municipality" || self.MyAddress().SelectedCat() == "SubMunicipality")) {
-                //    $("#tabs").tabs({ active: 1 });
-                //    $("#Metroplitan").focus();
-                //    alert("Choose the City Category");
-                //}
-                //else if (isNullOrEmpty(self.MyAddress().Ward())) {
-                //    $("#tabs").tabs({ active: 1 });
-                //    $("#ward").focus();
-                //    alert("Ward Should must be entered");
-                //}
-                //else if (!(self.MyAddress().Ward() < 21)) {
-                //    alert("Ward must be below 20");
-                //    $("#tabs").tabs({ active: 1 });
-                //    $("#ward").focus();
-                //    return;
-                //}
-                //else if (isNullOrEmpty(self.MyAddress().Tole())) {
-                //    $("#tabs").tabs({ active: 1 });
-                //    $("#tole").focus();
-                //    alert("Tole must be entered");
-                //}
-
-                else if (self.DataList() == "" ) {
+                else if (self.DataList() == "") {
                     $("#tabs").tabs({ active: 1 });
                     $("#addressType").focus();
                     $("#errorMessage").html('Address Must be added!!!!');
                     $("#dialogbox").dialog("open");
-
                 }
-
                 else {
-
-                        if ((ko.toJS(self.DataList())).find(x => (x.AddressTypeId == self.MyAddress().AddressTypeId()))) {
-                            alert("Same Data!!......Data Already Exist!!");
+                        self.MyModel().SalutationName((self.SalutationList().find(X => X.Value == self.MyModel().SalutationId()) || {}).Text);
+                        self.MyModel().Nationality((self.NationalList().find(X => X.Value == self.MyModel().NationalId()) || {}).Text);
+                        if (isNullOrEmpty(self.PersonalId())) {
+                            UiEvents.AjaxFunction.AjaxCallForSave();
                         }
                         else {
-                            self.MyModel().SalutationName((self.SalutationList().find(X => X.Value == self.MyModel().SalutationId()) || {}).Text);
-                            self.MyModel().Nationality((self.NationalList().find(X => X.Value == self.MyModel().NationalId()) || {}).Text);
-                            //self.MyAddress().AddressType((self.AddressTypeList().find(X => X.Value == self.MyAddress().AddressTypeId()) || {}).Text);
-                            //self.MyAddress().Province((self.ProvinceList().find(X => X.Value == self.MyAddress().ProvinceId()) || {}).Text);
-                            //self.MyAddress().City((self.CityList().find(X => X.Value == self.MyAddress().CityId()) || {}).Text);
-                            //self.DataList.push(ko.toJS(self.MyAddress()));
-                            //self.EduList.push(ko.toJS(self.MyModel().chosenEdu()))
-                            UiEvents.validate.AjaxCall();
-
-                            return true;
+                            UiEvents.AjaxFunction.AjaxCallForUpdate();
                         }
-                        //self.MyModel().SalutationName((self.SalutationList().find(X => X.Value == self.MyModel().SalutationId()) || {}).Text);
-                        //self.MyModel().Nationality((self.NationalList().find(X => X.Value == self.MyModel().NationalId()) || {}).Text);
-                        //self.MyAddress().AddressType((self.AddressTypeList().find(X => X.Value == self.MyAddress().AddressTypeId()) || {}).Text);
-                        //self.MyAddress().Province((self.ProvinceList().find(X => X.Value == self.MyAddress().ProvinceId()) || {}).Text);
-                        //self.MyAddress().City((self.CityList().find(X => X.Value == self.MyAddress().CityId()) || {}).Text);
-                        ///*self.EduList.push(ko.toJS(self.MyModel().chosenEdu()))*/
-                        //self.DataList.push(ko.toJS(self.MyAddress()));
-                        //UiEvents.validate.AjaxCall();
-
-                        //return true;
+                        return true;
                      }
-            },
-
-            AjaxCall: function () {
-
-                var edu = ko.toJS(self.MyModel().chosenEdu())
-                var edulist = [];
-
-                for (let i = 0; i < edu.length; i++) {
-
-                    edulist.push({"name": edu[i]})
-                }
-
-                let personInfo = {
-                    Salutation: self.MyModel().SalutationName(),
-                    FirstName: self.MyModel().FirstName(),
-                    LastName: self.MyModel().LastName(),
-                    Email: self.MyModel().Email(),
-                    PhoneNumber: self.MyModel().PhoneNumber(),
-                    Age: self.MyModel().Age(),
-                    Gender: self.MyModel().SelectedGender(),
-                    Educations: edulist,
-                    Nationality: self.MyModel().Nationality(),
-
-                    AddressList: ko.toJS(self.DataList())
-                    //AddressList: [{ "AddressType": self.MyAddress().AddressType(), "Province": self.MyAddress().Province(), "City": self.MyAddress().City(), "CityCategory": self.MyAddress().SelectedCat(), "Ward": self.MyAddress().Ward(), "Tole": self.MyAddress().Tole() },
-                    //{ "AddressType": "per", "Province": "Prov- 2", "City": "Bharatpur", "CityCategory": "asd", "Ward": "4", "Tole": "asd" }]
-                }
-                console.log(personInfo);
-
-                $.ajax({
-
-                    type: "POST",
-                    url: '/Home/GetJsonData',
-                    dataType: "json",
-                    data: JSON.stringify({ "data": personInfo }),
-                    contentType: "application/json; charset=utf-8",
-                    success: function (data) {
-                        debugger
-                        alert("Successfully Submited!!");
-                        //alert(data.Name + "-" + data.Email + "-" + data.Phone + "-" + data.Age);
-
-                    }
-
-                });
             },
 
             AddressValidation: function () {
@@ -401,23 +295,25 @@ function PersonalVM() {
                     $("#tole").focus();
                     $("#errorMessage").html('Tole must be entered');
                     $("#dialogbox").dialog("open");
-                    
+
                 }
                 else {
-                        if ((ko.toJS(self.DataList())).find(x => (x.AddressTypeId == self.MyAddress().AddressTypeId()))) {
-                            $("#errorMessage").html('Same Address Type!!......Data Already Exist!!');
-                            $("#dialogbox").dialog("open");
-                        }
-                        else {
-                            self.MyAddress().AddressType((self.AddressTypeList().find(X => X.Value == self.MyAddress().AddressTypeId()) || {}).Text);
-                            self.MyAddress().Province((self.ProvinceList().find(X => X.Value == self.MyAddress().ProvinceId()) || {}).Text);
-                            self.MyAddress().City((self.CityList().find(X => X.Value == self.MyAddress().CityId()) || {}).Text);
-                            self.DataList.push(ko.toJS(self.MyAddress()));
+                    debugger
+                    //var a = self.MyAddress().AddressTypeId((self.AddressTypeList().find(X => X.Text == self.MyAddress().AddressType()) || {}).Value);
+                    if (ko.toJS(self.DataList().find(x => (x.AddressTypeId == self.MyAddress().AddressTypeId())))) {
+                        $("#errorMessage").html('Same Address Type!!......Data Already Exist!!');
+                        $("#dialogbox").dialog("open");
+                    }
+                    else {
+                        self.MyAddress().AddressType((self.AddressTypeList().find(X => X.Value == self.MyAddress().AddressTypeId()) || {}).Text);
+                        self.MyAddress().Province((self.ProvinceList().find(X => X.Value == self.MyAddress().ProvinceId()) || {}).Text);
+                        self.MyAddress().City((self.CityList().find(X => X.Value == self.MyAddress().CityId()) || {}).Text);
+                        self.DataList.push(ko.toJS(self.MyAddress()));
 
-                            return true;    
-                        }
-                        
-                     }
+                        return true;
+                    }
+
+                }
             },
 
             UpdateValidation: function () {
@@ -463,12 +359,183 @@ function PersonalVM() {
             },
         },
 
+        AjaxFunction: {
+            AjaxCallForSave: function () {
+                /*debugger*/
+                var edu = ko.toJS(self.MyModel().chosenEdu())
+                var edulist = [];
+
+                for (let i = 0; i < edu.length; i++) {
+
+                    edulist.push({ "name": edu[i] })
+                }
+                debugger
+                let personInfo = {
+                    Id: self.PersonalId(),
+                    Salutation: self.MyModel().SalutationName(),
+                    FirstName: self.MyModel().FirstName(),
+                    LastName: self.MyModel().LastName(),
+                    Email: self.MyModel().Email(),
+                    PhoneNumber: self.MyModel().PhoneNumber(),
+                    Age: self.MyModel().Age(),
+                    Gender: self.MyModel().SelectedGender(),
+                    Educations: edulist,
+                    Nationality: self.MyModel().Nationality(),
+
+                    AddressList: ko.toJS(self.DataList())
+                    //AddressList: [{ "AddressType": self.MyAddress().AddressType(), "Province": self.MyAddress().Province(), "City": self.MyAddress().City(), "CityCategory": self.MyAddress().SelectedCat(), "Ward": self.MyAddress().Ward(), "Tole": self.MyAddress().Tole() },
+                    //{ "AddressType": "per", "Province": "Prov- 2", "City": "Bharatpur", "CityCategory": "asd", "Ward": "4", "Tole": "asd" }]
+                }
+                console.log(personInfo);
+
+                $.ajax({
+
+                    type: "POST",
+                    url: '/Home/GetJsonData',
+                    dataType: "json",
+                    data: JSON.stringify({ "data": personInfo }),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        /*debugger*/
+                        alert("Successfully Submited!!");
+                        //alert(data.Name + "-" + data.Email + "-" + data.Phone + "-" + data.Age);
+
+                    }
+
+                });
+            },
+
+            AjaxCallForUpdate: function () {
+                /*debugger*/
+                var edu = ko.toJS(self.MyModel().chosenEdu())
+                var edulist = [];
+
+                for (let i = 0; i < edu.length; i++) {
+
+                    edulist.push({ "name": edu[i] })
+                }
+                debugger
+                let personInfo = {
+                    Id: self.PersonalId(),
+                    Salutation: self.MyModel().SalutationName(),
+                    FirstName: self.MyModel().FirstName(),
+                    LastName: self.MyModel().LastName(),
+                    Email: self.MyModel().Email(),
+                    PhoneNumber: self.MyModel().PhoneNumber(),
+                    Age: self.MyModel().Age(),
+                    Gender: self.MyModel().SelectedGender(),
+                    Educations: edulist,
+                    Nationality: self.MyModel().Nationality(),
+
+                    AddressList: ko.toJS(self.DataList())
+                    //AddressList: [{ "AddressType": self.MyAddress().AddressType(), "Province": self.MyAddress().Province(), "City": self.MyAddress().City(), "CityCategory": self.MyAddress().SelectedCat(), "Ward": self.MyAddress().Ward(), "Tole": self.MyAddress().Tole() },
+                    //{ "AddressType": "per", "Province": "Prov- 2", "City": "Bharatpur", "CityCategory": "asd", "Ward": "4", "Tole": "asd" }]
+                }
+                console.log(personInfo);
+
+                
+
+                $.ajax({
+
+                    type: "POST",
+                    url: '/Home/GetJsonData',
+                    dataType: "json",
+                    data: JSON.stringify({ "data": personInfo }),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        alert("Successfully Updated!!");
+                    }
+
+                });
+            },
+
+            AjaxCallforDetail: function () {
+                $.ajax({
+
+                    type: "POST",
+                    url: '/Home/GetAllData',
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        /*debugger;*/
+                        self.DetailList([]);
+                        self.DetailList(result.Data);
+                        UiEvents.functions.AddDetails("DetailGrid");
+                    }
+                });
+            },
+
+            AjaxForEdit: function (PersonalId) {
+                /*debugger*/
+                self.DataList([]);
+                $.ajax({
+                    type: "POST",
+                    url: '/Home/FetchDetails',
+                    dataType: "json",
+                    data: JSON.stringify({ Id: PersonalId }),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        UiEvents.functions.AddDetails("DetailGrid");
+                        $("#tabs").tabs({ active: 0 });
+                        self.enableDisableAllUpd(true);
+                        self.enableDisableClear(true);
+                        self.enableDisableNew(false);
+                        self.enableDisableSave(false);
+                        self.enableDisable(true);
+                        self.enableDisableAdd(false);
+                        self.enableDisableAdd(true);
+                        self.enableDisableUpd(false);
+                        self.DataList([]);
+                        self.DataList(data.Data.AddressList);
+                        UiEvents.functions.Save("dataGrid");
+                        self.PersonalId(data.Data.Id);
+                        self.MyModel().FirstName(data.Data.FirstName);
+                        self.MyModel().FirstName(data.Data.FirstName);
+                        self.MyModel().LastName(data.Data.LastName);
+                        self.MyModel().Age(data.Data.Age);
+                        self.MyModel().PhoneNumber(data.Data.PhoneNumber);
+                        self.MyModel().Email(data.Data.Email);
+                        self.MyModel().SelectedGender(data.Data.Gender);
+
+                        /*debugger*/
+                        var edu = data.Data.Educations;
+                        let edulist = [];
+                        for (let i = 0; i < edu.length; i++) {
+                            edulist.push(edu[i].Name);
+                        }
+                        self.MyModel().chosenEdu(edulist);
+
+                        self.MyModel().SalutationId((self.SalutationList().find(x => x.Text == data.Data.Salutation)).Value);
+                        self.MyModel().NationalId((self.NationalList().find(x => x.Text == data.Data.Nationality)).Value);
+                        /*self.MyModel().Nationality((self.NationalList().find(X => X.Value == self.MyModel().NationalId()) || {}).Text*/
+                    }
+                })
+            },
+
+            AjaxForDelete: function (PersonalId) {
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Home/DeleteData',
+                    dataType: "json",
+                    data: JSON.stringify({ Id: PersonalId }),
+                    contentType: "application/json; charset=utf-8",
+                    success: function () {
+                        /*debugger*/
+                        UiEvents.AjaxFunction.AjaxCallforDetail();
+                    }
+                })
+            }
+
+        },
+
         clear: {
             ResetAll: function () {
                 self.MyModel(new models.MyModel());
                 self.MyAddress(new models.MyAddress());
                 $("#tabs").tabs();
                 self.DataList([]);
+
             },
 
             clearfield: function () {
@@ -498,7 +565,7 @@ function PersonalVM() {
                         {
                             title: "Action", align: "Center", width: "20%", render: function (ui) {
 
-                                return `<button class="btn btn-danger" onclick="obj.delete(${ui.rowIndx});" type="button"><i class="fas fa-trash fa-lg">  Delete</i></button>  <button class="btn" style="background-color: #66CD00" onclick="obj.edit(${ui.rowIndx});" type="button"><i class="fas fa-edit fa-lg">Edit</i></button>`;
+                                return `<button class="btn btn-danger" onclick="obj.Add_delete(${ui.rowIndx});" type="button"><i class="fas fa-trash fa-lg">  Delete</i></button>  <button class="btn" style="background-color: #66CD00" onclick="obj.Add_edit(${ui.rowIndx});" type="button"><i class="fas fa-edit fa-lg">Edit</i></button>`;
                             }
                         },
 
@@ -506,10 +573,42 @@ function PersonalVM() {
 
                     options.dataModel = { data: ko.toJS(self.DataList()) };
                     options.showBottom = false;
+
                     $("#" + control).pqGrid(options);
                 }
             },
-            
+
+            AddDetails: function (control) {
+                if ($("#" + control).pqGrid("instance")) {
+                    // $("#" + control).pqGrid("destroy");
+                    $("#" + control).pqGrid('option', 'dataModel.data', ko.toJS(self.DetailList()));
+                    $("#" + control).pqGrid('refreshDataAndView');
+                } else {
+                    const options = Object.assign({}, pqOptions);
+                    options.colModel = [
+                        { title: "Salutation", align: "center", dataIndx: "Salutation", width: "5%" },
+                        { title: "FirstName", align: "left", dataIndx: "FirstName", width: "10%" },
+                        { title: "LastName", align: "center", dataIndx: "LastName", width: "10%" },
+                        { title: "Age", align: "center", dataIndx: "Age", width: "5%" },
+                        { title: "PhoneNumber", align: "Center", dataIndx: "PhoneNumber", width: "15%" },
+                        { title: "Email", align: "Center", dataIndx: "Email", width: "15%" },
+                        { title: "Gender", align: "Center", dataIndx: "Gender", width: "10%" },
+                        { title: "Nationality", align: "Center", dataIndx: "Nationality", width: "10%" },
+                        {
+                            title: "Action", align: "Center", width: "20%", render: function (ui) {
+
+                                return `<button class="btn btn-danger" onclick="obj.DetailDelete(${ui.rowData.Id});" type="button"><i class="fas fa-trash fa-lg">  Delete</i></button>  <button class="btn" style="background-color: #66CD00" onclick="obj.DetailEdit(${ui.rowData.Id});" type="button"><i class="fas fa-edit fa-lg">Edit</i></button>`;
+                            }
+                        },
+
+                    ];
+
+                    options.dataModel = { data: ko.toJS(self.DetailList()) };
+                    options.showBottom = true;
+                    options.height = 300;
+                    $("#" + control).pqGrid(options);
+                }
+            },
         },
 
     };
@@ -532,8 +631,9 @@ function PersonalVM() {
     };
 
     self.Save = function () {
-
+        
         if (UiEvents.validate.SaveValidation()) {
+            self.DataList([]);
             UiEvents.functions.Save("dataGrid");
             UiEvents.clear.ResetAll();
             self.enableDisableClear(false);
@@ -546,6 +646,7 @@ function PersonalVM() {
     };
 
     self.Add = function () {
+        
         if (UiEvents.validate.AddressValidation()) {
             UiEvents.functions.Save("dataGrid");
             UiEvents.clear.clearfield();
@@ -565,7 +666,9 @@ function PersonalVM() {
         self.enableDisableSave(false);
         self.enableDisable(false);
         self.enableDisableAdd(false);
+        self.enableDisableAllUpd(false);
         UiEvents.functions.Save("dataGrid");
+        //PersonalVM.Init();
 
     };
 
@@ -580,36 +683,30 @@ function PersonalVM() {
 
     };
 
-    self.delete = function deleteRow(index) {
+    self.Add_delete = function deleteRow(index) {
 
         self.DataList.splice(index, 1);
         UiEvents.functions.Save("dataGrid");
 
     };
 
-    self.edit = function editRow(index) {
-        debugger
-        var a = $('#dataGrid').pqGrid("getRowData", { rowIndx: index });
-        self.MyAddress().AddressTypeId(a.AddressTypeId);
-        self.MyAddress().ProvinceId(a.ProvinceId);
-        self.MyAddress().CityId(a.CityId);
-        self.MyAddress().SelectedCat(a.SelectedCat);
-        self.MyAddress().Ward(a.Ward);
-        self.MyAddress().Tole(a.Tole);
-        self.enableDisableSave(false);
-        self.enableDisableUpd(true);
-        self.enableDisableClear(false);
-        self.enableDisable(true);
-        self.enableDisableAdd(false);
+    self.Add_edit = function editRow(index) {
+            var a = $('#dataGrid').pqGrid("getRowData", { rowIndx: index });
+            self.MyAddress().AddressTypeId((self.AddressTypeList().find(x => x.Text == a.AddressType)).Value);
+            self.MyAddress().ProvinceId((self.ProvinceList().find(x => x.Text == a.Province)).Value);
+            self.MyAddress().CityId((self.CityList().find(x => x.Text == a.City)).Value);
+            //self.MyAddress().ProvinceId(a.ProvinceId);
+            //self.MyAddress().CityId(a.CityId);
+            self.MyAddress().SelectedCat(a.SelectedCat);
+            self.MyAddress().Ward(a.Ward);
+            self.MyAddress().Tole(a.Tole);
+            self.enableDisableSave(false);
+            self.enableDisableUpd(true);
+            self.enableDisableClear(false);
+            self.enableDisable(true);
+            self.enableDisableAdd(false);
 
-        self.HdnId(index);
-        // self.UpdateInfo = function(){
-        // debugger
-        // var ind = a.pq_ri
-
-
-        // UiEvents.functions.Save("demoGrid");  
-        // }
+            self.HdnId(index);
     };
 
     self.Update = function () {
@@ -630,33 +727,58 @@ function PersonalVM() {
             list[self.HdnId()].SelectedCat = self.MyAddress().SelectedCat();
             list[self.HdnId()].Ward = self.MyAddress().Ward();
             list[self.HdnId()].Tole = self.MyAddress().Tole();
-
+            debugger;
             if (UiEvents.validate.UpdateValidation()) {
-                self.DataList([]);
-                self.DataList(list);
-                UiEvents.functions.Save("dataGrid");
-                UiEvents.clear.clearfield();
-                self.enableDisableSave(false);
-                self.enableDisableUpd(false);
-                self.enableDisableClear(false);
-                self.enableDisable(false);
-                self.enableDisableNew(true);
-                self.HdnId('');
+                    self.DataList([]);
+                    self.DataList(list);
+                    UiEvents.functions.Save("dataGrid");
+                    UiEvents.clear.clearfield();
+                    self.enableDisableSave(false);
+                    self.enableDisableUpd(false);
+                    self.enableDisableClear(false);
+                    self.enableDisable(false);
+                    self.enableDisableNew(true);
+                    self.HdnId('');
             }
 
         }
     };
 
-    
+    self.DetailDelete = function (PersonalId) {
+        UiEvents.AjaxFunction.AjaxForDelete(PersonalId);
+    };
 
+    self.DetailEdit = function (PersonalId) {
+        UiEvents.AjaxFunction.AjaxForEdit(PersonalId);
+        self.PersonalId(PersonalId);
+    };
+
+    self.AllUpdate = function () {
+        if (UiEvents.validate.SaveValidation()) {
+            self.DataList([]);
+            UiEvents.functions.Save("dataGrid");
+            UiEvents.clear.ResetAll();
+            self.enableDisableClear(false);
+            self.enableDisableNew(true);
+            self.enableDisableSave(false);
+            self.enableDisable(false);
+            self.enableDisableAdd(false);
+
+        }
+        
+    }
 
     function Init() {
         models.UiElements();
         $("#tabs").tabs();
         UiEvents.clear.ResetAll();
-        
+
         $("#tabs, #tabs-2").click(function () {
             UiEvents.functions.Save("dataGrid");
+        });
+
+        $("#tabs, #tabs-3").click(function () {
+            UiEvents.AjaxFunction.AjaxCallforDetail();
         });
 
         $("#dialogbox").dialog({

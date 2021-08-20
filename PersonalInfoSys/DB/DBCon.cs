@@ -29,35 +29,73 @@ namespace PersonalInfoSys.DB
 
         public void SaveData(PersonalInfo data, out string message)
         {
-            try
+            if (data.Id == 0)
             {
-                createConnection();
-                SqlCommand cmd = new SqlCommand("usp_personal_detail_insert", sqlcon);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    createConnection();
+                    SqlCommand cmd = new SqlCommand("usp_personal_detail_insert", sqlcon);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                string jsondata = JsonConvert.SerializeObject(data.AddressList);
-                string jsonEdu = JsonConvert.SerializeObject(data.Educations);
-                cmd.Parameters.AddWithValue("@SALUTATION", data.Salutation);
-                cmd.Parameters.AddWithValue("@FIRST_NAME", data.FirstName);
-                cmd.Parameters.AddWithValue("@LAST_NAME", data.LastName);
-                cmd.Parameters.AddWithValue("@AGE", data.Age);
-                cmd.Parameters.AddWithValue("@PHONE_NUMBER", data.PhoneNumber);
-                cmd.Parameters.AddWithValue("@EMAIL", data.Email);
-                cmd.Parameters.AddWithValue("@GENDER", data.Gender);
-                cmd.Parameters.AddWithValue("@EDUCATION", jsonEdu);
-                cmd.Parameters.AddWithValue("@NATIONALITY", data.Nationality);
-                cmd.Parameters.AddWithValue("@ADD_JSON", jsondata);
-                sqlcon.Open();
-                cmd.ExecuteNonQuery();
-                sqlcon.Close();
+                    string jsondata = JsonConvert.SerializeObject(data.AddressList);
+                    string jsonEdu = JsonConvert.SerializeObject(data.Educations);
+                    cmd.Parameters.AddWithValue("@SALUTATION", data.Salutation);
+                    cmd.Parameters.AddWithValue("@FIRST_NAME", data.FirstName);
+                    cmd.Parameters.AddWithValue("@LAST_NAME", data.LastName);
+                    cmd.Parameters.AddWithValue("@AGE", data.Age);
+                    cmd.Parameters.AddWithValue("@PHONE_NUMBER", data.PhoneNumber);
+                    cmd.Parameters.AddWithValue("@EMAIL", data.Email);
+                    cmd.Parameters.AddWithValue("@GENDER", data.Gender);
+                    cmd.Parameters.AddWithValue("@EDUCATION", jsonEdu);
+                    cmd.Parameters.AddWithValue("@NATIONALITY", data.Nationality);
+                    cmd.Parameters.AddWithValue("@ADD_JSON", jsondata);
+                    sqlcon.Open();
+                    cmd.ExecuteNonQuery();
+                    sqlcon.Close();
 
-                message = "Success";
+                    message = "Inserted Successfully";
 
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message;
+                }
             }
-            catch (Exception ex)
+
+            else 
             {
-                message = ex.Message;
-            }
+                try
+                {
+                    createConnection();
+                    SqlCommand cmd = new SqlCommand("USP_PERSONAL_DETAIL_UPDATE", sqlcon);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    string jsondata = JsonConvert.SerializeObject(data.AddressList);
+                    string jsonEdu = JsonConvert.SerializeObject(data.Educations);
+                    cmd.Parameters.AddWithValue("@Id", data.Id);
+                    cmd.Parameters.AddWithValue("@SALUTATION", data.Salutation);
+                    cmd.Parameters.AddWithValue("@FIRST_NAME", data.FirstName);
+                    cmd.Parameters.AddWithValue("@LAST_NAME", data.LastName);
+                    cmd.Parameters.AddWithValue("@AGE", data.Age);
+                    cmd.Parameters.AddWithValue("@PHONE_NUMBER", data.PhoneNumber);
+                    cmd.Parameters.AddWithValue("@EMAIL", data.Email);
+                    cmd.Parameters.AddWithValue("@GENDER", data.Gender);
+                    cmd.Parameters.AddWithValue("@EDUCATION", jsonEdu);
+                    cmd.Parameters.AddWithValue("@NATIONALITY", data.Nationality);
+                    cmd.Parameters.AddWithValue("@ADD_JSON", jsondata);
+                    sqlcon.Open();
+                    cmd.ExecuteNonQuery();
+                    sqlcon.Close();
+
+                    message = "Update Successfully";
+                }
+
+                catch (Exception ex)
+                {
+                    message = ex.Message;
+                }
+
+            }            
         }
 
         public List<PersonalDetail> GetData()
@@ -79,7 +117,7 @@ namespace PersonalInfoSys.DB
                     personaldetail.Salutation = rdr["SALUTATION"].ToString();
                     personaldetail.FirstName = rdr["FIRST_NAME"].ToString();
                     personaldetail.LastName = rdr["LAST_NAME"].ToString();
-                    personaldetail.Age = int.Parse(rdr["AGE"].ToString());
+                    personaldetail.Age = rdr["AGE"].ToString();
                     personaldetail.PhoneNumber = rdr["PHONE_NUM"].ToString();
                     personaldetail.Email = rdr["EMAIL"].ToString();
                     personaldetail.Gender = rdr["GENDER"].ToString();
@@ -111,11 +149,11 @@ namespace PersonalInfoSys.DB
                 {
                     while (rdr.Read())
                     {
-
+                        personalInfo.Id = int.Parse(rdr["Id"].ToString());
                         personalInfo.Salutation = rdr["SALUTATION"].ToString();
                         personalInfo.FirstName = rdr["FIRST_NAME"].ToString();
                         personalInfo.LastName = rdr["LAST_NAME"].ToString();
-                        personalInfo.Age = int.Parse(rdr["AGE"].ToString());
+                        personalInfo.Age = rdr["AGE"].ToString();
                         personalInfo.PhoneNumber = rdr["PHONE_NUM"].ToString();
                         personalInfo.Email = rdr["EMAIL"].ToString();
                         personalInfo.Gender = rdr["GENDER"].ToString();
@@ -152,40 +190,6 @@ namespace PersonalInfoSys.DB
             }
             return personalInfo;
         }
-
-
-        //public void Update(PersonalInfo data, out string message)
-        //{
-        //    try
-        //    {
-        //        createConnection();
-        //        SqlCommand cmd = new SqlCommand("", sqlcon);
-        //        cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-        //        string jsondata = JsonConvert.SerializeObject(data.AddressList);
-        //        string jsonEdu = JsonConvert.SerializeObject(data.Educations);
-        //        cmd.Parameters.AddWithValue("@SALUTATION", data.Salutation);
-        //        cmd.Parameters.AddWithValue("@FIRST_NAME", data.FirstName);
-        //        cmd.Parameters.AddWithValue("@LAST_NAME", data.LastName);
-        //        cmd.Parameters.AddWithValue("@AGE", data.Age);
-        //        cmd.Parameters.AddWithValue("@PHONE_NUMBER", data.PhoneNumber);
-        //        cmd.Parameters.AddWithValue("@EMAIL", data.Email);
-        //        cmd.Parameters.AddWithValue("@GENDER", data.Gender);
-        //        cmd.Parameters.AddWithValue("@EDUCATION", jsonEdu);
-        //        cmd.Parameters.AddWithValue("@NATIONALITY", data.Nationality);
-        //        cmd.Parameters.AddWithValue("@ADD_JSON", jsondata);
-        //        sqlcon.Open();
-        //        cmd.ExecuteNonQuery();
-        //        sqlcon.Close();
-
-        //        message = "Success";
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        message = ex.Message;
-        //    }
-        //}
 
         public void Delete(int? id, out string message)
         {
